@@ -1,11 +1,14 @@
 package org.example.dogs
 
 import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import retrofit2.awaitResponse
 import java.awt.event.WindowAdapter
 import java.awt.event.WindowEvent
 import javax.swing.JFrame
+import kotlin.time.Duration.Companion.seconds
 
 suspend fun loadDogImage(window: JFrame) {
     val pictureInfo = dogService.getPictures(1)
@@ -21,7 +24,14 @@ class ImageViewer : WindowAdapter() {
     override fun windowOpened(e: WindowEvent) {
         val window = e.window as JFrame
         coroutineScope.launch {
-            loadDogImage(window)
+            while (true) {
+                loadDogImage(window)
+                delay(3.seconds)
+            }
         }
+    }
+
+    override fun windowClosed(e: WindowEvent) {
+        coroutineScope.cancel()
     }
 }
