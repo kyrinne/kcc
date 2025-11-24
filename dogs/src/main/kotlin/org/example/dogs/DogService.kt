@@ -1,5 +1,6 @@
 package org.example.dogs
 
+import com.squareup.moshi.JsonClass
 import okhttp3.Dispatcher
 import okhttp3.OkHttpClient
 import okhttp3.Protocol
@@ -16,14 +17,15 @@ import java.util.concurrent.Executors
 
 interface DogService  {
     @GET("{count}")
-    fun getPictures(
+    suspend fun getPictures(
         @Path("count") count: Int,
-    ): Call<DogPictureInfo>
+    ): DogPictureInfo
 
     @GET
     fun downloadImage(@Url url: String): Call<ResponseBody>
 }
 
+@JsonClass(generateAdapter = true)
 data class DogPictureInfo(
     val message: List<String>, // urls
     val status: String,
